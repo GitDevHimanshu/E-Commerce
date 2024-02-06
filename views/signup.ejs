@@ -1,0 +1,54 @@
+<%- include ('partials/header'); -%>
+<style>
+    #main {
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #container {
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        width: 50%;
+        height: 55%; 
+        justify-content: center;
+        align-items: center;  
+        display: flex;
+        flex-direction: column;
+    }
+
+    input {
+        width: 400px;
+        height: 30px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+</style>
+<div id = "main">
+    <div id = "container">
+        <h1>signup</h1>
+        <form method="post" enctype="multipart/form-data" action="/signup">
+            <input type="text" name="name" placeholder="name*" required/> <br>
+            <input type="email" name="username" placeholder="username*" required/> <br>
+            <input type="password" name="password" placeholder="password*" required/> <br>
+            <input type = "text" name = 'address' placeholder = "address details" /> <br>
+            <input type = 'tel' name = "phone" placeholder = "phone Number" /> <br>
+            <input type="file" name="profile" /> <br>
+            <button type="submit">Sign Up</button>
+            <p>Already have an account? <a href="/login">login</a></p> 
+        </form>
+    </div>
+</div>
+

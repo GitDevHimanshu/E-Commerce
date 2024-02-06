@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="/adminhomestyle.css">
+</head>
+
+<body>
+    <%- include('partials/header') -%>
+    <div id="main">
+        <a id = "viewallprod" href="/admin/viewproducts">View all product</a>
+        
+        <div id = "upper">
+            <div id = "newprod">
+                <div id  = "form">
+                    <label for="name">Product Name</label>
+                    <input type="text" placeholder="Product Name" name="name" id = "name" required/> 
+                    <label for="description">Product description</label>
+                    <input type="text" placeholder="Product description" name="description" id = "description" required/>
+                    <label for="price">Product price</label>
+                    <input type="number" placeholder="Product Price" name="price" id = "price" required/>
+                    <label for="quantity">Product quantity</label>
+                    <input type="number" placeholder="Product Quantity" name="quantity" id = "quantity" required />
+                    <label for="image">Product image</label>
+                    <input type="file" accept="image/*" name="image" id = "image" /> <br>
+                    <label id = "error" style="color: red; display: block; width: 100%; text-align: center;"></label>
+                    <button onclick="addproduct()">Add Product</button>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+        <div id = "lower">
+            <div id = "left">
+                <button onclick="moveleft()" class="product_navigation"><<</button>
+            </div>
+
+            <div id = "mid">
+                <% Product.forEach(element => { %>
+                    <div class = "prodframe" id = "<%= element.ID %>">
+                        <div id = "img">
+                            <img src="<%= element.PHOTO %>"/>
+                        </div>
+                        <div id = "actions">
+                            <div id = "detail">
+                               
+                                <span>
+                                    <label> Product Name </label>
+                                    <input type="text" value="<%= element.PRODNAME %>" readonly/><br>
+                                </span>
+                               
+                                <span>
+                                    <label> Product Price </label>
+                                    <input type="number" value="<%= element.PRICE %>" readonly/><br>
+                                </span>
+                               
+                                <span>
+                                    <label> Product Qty </label>
+                                    <input type="number" value="<%= element.QUANTITY %>" readonly>
+                                    
+                                </span>
+                                
+                            </div>
+                            <div id = "update_delete">
+                                <!-- <button onclick="update('<%= element.ID  %>')" id = "update">Update</button> -->
+                                <button onclick="deleteprod('<%= element.ID %>')"  id = "reject">Reject</button>
+                                <button onclick="approve('<%= element.ID %>')" id = "approve">approve</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div id = "right">
+                <button onclick="moveright()"  class="product_navigation">>></button>
+                <label id = "offset" style="display: none;">1</label>
+            </div>
+            
+        </div>
+</body>
+
+<script src="/adminhomescript.js"></script>
+
+</html>

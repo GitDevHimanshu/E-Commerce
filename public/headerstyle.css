@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    width: 100%;
+    background-color: #333;
+    height: 60px;
+}
+
+#logo {
+    width: 20%;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+#logo a {
+    text-decoration: none;
+    font-size: 24px;
+    color: white;
+}
+
+#signup {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+}
+
+#signup a {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+#signup a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#signup a.logout {
+    color: #ff6347; 
+}
+
+#user {
+    display: flex;
+    flex-direction: row;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+#user img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    margin-left: 10px;
+    padding-top: 5px;
+}
+
+#user p {
+    color: whitesmoke;
+    margin-left: 10px;
+}
+
+.fa {
+    font-size: x-large;
+}
+
+#userinfo {
+    visibility: hidden;
+    position: absolute;
+    top: 10%;
+    right: 4%;
+    width: 200px;
+    height: 100px;
+    z-index: 99;
+    background-color: rgb(253, 253, 253);
+    border-radius: 2%;
+    box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
+    transition: visibility 0.3s ease; 
+}
+
+#userinfo a {
+    margin-left: 10px;
+}
+
+#user:hover #userinfo {
+    visibility: visible;
+}
+
+#admins {
+    position: absolute;
+    width: 140px;
+    height: 90px;
+    top: 6vh;
+    right: 0.5%;
+    z-index: 99;
+    border-radius: 5%;
+    box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
+    background-color: gray;
+    visibility: hidden;
+}   
+
+#logins {
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+#logins:hover #admins {
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: last baseline;
+}
+
+#seller {
+    position: absolute;
+    width: 120px;
+    height: 7   0px;
+    top: 6vh;
+    right: 2%;
+    z-index: 99;
+    border-radius: 5%;
+    box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
+    background-color: gray;
+    visibility: hidden;
+}   
+
+#signups {
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+#signups:hover #seller {
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: last baseline;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    #logo a {
+        font-size: 20px;
+    }
+
+    #signup a {
+        margin-right: 5px;
+    }
+
+    #user p {
+        margin-left: 5px;
+    }
+
+    #userinfo {
+        width: 150px;
+    }
+
+    #user p {
+        display: none; 
+    }
+}

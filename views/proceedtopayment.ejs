@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         .main {
+            height: 100vh;
+            display: flex;
+         }  
+         
+         #left {
+            width: 50%;
+            background-color: rgb(232, 233, 233);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+         }
+
+
+         #billing-adress{
+            height: 10vh;
+            width: 70%;
+            padding: 10%;
+         }
+
+         #edit {
+            padding: 1% 7%;
+            background-color: rgb(2, 2, 157);
+            color: white;
+
+         }
+
+         #address{
+            height: 70%;
+            width: 100%;
+            /* margin-top: 20%; */
+         }
+
+
+
+         #right {
+            width: 50%;
+         }
+
+         .prodframe {
+            background-color: rgb(239, 239, 239);
+            width: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            border-bottom: 1px solid black;
+         }
+
+         .prodframe img{
+            height: 80px;
+            width: 80px;
+         }
+
+         #Ordersummary{
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: auto;
+         }
+
+         #billamt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+         }
+
+         #billamt button {
+            padding: 10px 60px;
+            border-radius: 4%;
+            background-color: green;
+            color: white;
+         }
+
+         #card-info {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            visibility: hidden;
+        }
+
+        #card-info h3 {
+            font-size: 18px;
+           margin-bottom: 15px;
+        }
+
+        #card-info label {      
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        #card-info input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #card-info input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+
+    </style>
+</head>
+<body>
+    <%- include('partials/header') -%>
+   
+    <div class="main">
+
+        <div id = "left">
+            <div id = "billing-adress">
+                <p id = "addressp" style="font-weight: bold;"><%= address %></p>
+                <textarea id="address" placeholder="change your address" name="address" required></textarea>
+                <input placeholder="phone*" style="margin-bottom: 5px;" type="tel" required/><br>
+                <button id = "edit" onclick="changeadress()">edit</button>
+            </div>
+
+            <div id='payment-options'>
+                <h3>Payment Options</h3>
+                <label for='payment-method'>Select Payment Method:</label>
+                <select id='payment-method' name='payment-method'>
+                    <option value='cash'>Cash on Delivery</option>
+                    <option value='card'>Credit/Debit Card</option>
+                </select>
+            </div>
+
+            <div id='card-info'>
+                <h3>Card Information</h3>
+                <label for='card-number'>Card Number:</label>
+                <input type='text' id='card-number' name='card-number' placeholder='Enter your card number' required><br>
+            
+                <label for='expiration-date'>Expiration Date:</label>
+                <input type='date' id='expiration-date' name='expiration-date' placeholder='MM/YYYY' required><br>
+            
+                <label for='cvv'>CVV:</label>
+                <input type='text' id='cvv' name='cvv' placeholder='Enter CVV' required>
+            </div>
+            
+        </div>
+
+
+        
+        <div id = "right">
+            <div id = "Ordersummary">
+                <% cart_product.forEach(element => { %>
+                    <div class="prodframe" id = "<%= element.ID %>">
+                        <img src="<%= element.PHOTO %>"/>
+                        <h5> <%= element.PRODNAME %> </h5>
+                        <h6> Rs. <%= parseFloat(element.PRICE * element.QUANTITY ) %> </h6>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div id = "billamt">
+                <h2>Bill Amount : <span><%= totalbill %></span></h2>
+                <button id = "placeorder" onclick="placeorder()"> place order </button>  
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+<script>
+    const paymentmethod = document.getElementById("payment-method");
+    const cardinfo = document.getElementById("card-info")
+    paymentmethod.addEventListener("change", function(){
+        console.log(paymentmethod.value)
+        if(paymentmethod.value == 'card' ){
+            cardinfo.style.visibility = 'visible';
+        } else {
+            cardinfo.style.visibility = 'hidden';
+        }
+    })
+
+
+    async function changeadress(){
+        let address = document.getElementById("address");
+        let addressp = document.getElementById("addressp")
+        // console.log(address.value);
+
+        if(address.value.trim()  !== ""){
+        const res = await fetch("http://localhost:3000/cart/changeaddress",{
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify( { address: address.value } )
+        })
+        const data =  await res.json();
+        if(data.updated){
+            addressp.innerText = address.value;
+            address.value = "";
+        } else {
+            console.log("address not updated");
+        }
+        } else {
+            console.log("field cannot be empty");
+        }
+    }
+
+
+    async function placeorder(){
+        const cardnum = document.getElementById("card-number").value;
+        const cardexp = document.getElementById("expiration-date").value;
+        const cardcvv = document.getElementById("cvv").value;
+        console.log(cardnum, cardexp, cardcvv);
+        if (paymentmethod.value === "cash" || (cardnum.trim() !== "" && cardexp.trim() !== "" && cardcvv.trim() !== "")) {
+            const res = await fetch("http://localhost:3000/cart/placeorder", {
+            method: 'POST',
+        });
+        }
+
+    }
+</script>
+</html>

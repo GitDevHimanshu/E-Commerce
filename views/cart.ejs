@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/cartstyle.css">
+</head>
+<body>
+
+<%- include ('partials/header'); -%>
+
+<!-- <h1>Cart</h1> -->
+<div id = "body">
+    <div id = "parent_div">
+        <% cart_product.forEach(element => { %>
+            <div class="<%= element.ID %>">
+                <div id = "img">
+                    <img src="<%= element.PHOTO %>" alt="product image" />
+                </div>
+                <div id = "controls">
+                    <p><%= element.PRODNAME %></p>
+                    <button onclick="remove('<%= element.ID %>')">X</button>
+                    <button style="background-color: black;" onclick="decrease('<%= element.ID %>')">-</button>
+                    <label id = "label"> <%= element.QUANTITY %> </label>
+                    <button style="background-color: black;" onclick="increase('<%= element.ID %>', '<%= element.PRODUCT_ID %>')">+</button>
+                </div> 
+            </div>
+        <% }) %>
+    </div>
+
+
+    <div id = "bill">
+        <div id = "table">
+            <table >
+                <tr style="border-bottom: 1px solid black;">
+                    <th> Item Name </th>
+                    <th> Quantity </th>
+                    <th> Unit price </th>
+                    <th> total price </th>
+                </tr>
+               
+                <% cart_product.forEach(element => { %>
+                    <tr class = "<%= element.ID %>">
+                        <td> <%= element.PRODNAME %> </td>
+                        <td> <%= element.QUANTITY %> </td>
+                        <td> <%= element.PRICE %></td>
+                        <td> <%= (element.QUANTITY * parseFloat(element.PRICE)).toFixed(2) %> </td>
+                    </tr>  
+                <% }) %> 
+                
+            </table>
+        </div>
+        <div id = "abc">
+            <label id = "totalbill">Total Bill: </label> <label id = "total_bill"> <%= b %> </label>       
+        </div>
+        <div style="display: flex; justify-content: center; text-align: center; margin-top: 5px; margin-bottom: 5px ;">
+            <button  onclick="checkout()">Check Out</button>
+            <a href="/cart/Payment" style="text-decoration: none; display: block;background-color: green; color: aliceblue; width: 100px; cursor: pointer; height: 40px; font-weight: bold;" ">Proceed To Payment</a> 
+        </div>  
+    </div>
+</div>
+</body>
+<script src="/cartscript.js"> </script>
+</html>

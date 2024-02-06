@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    #main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+
+    #login {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input {
+        margin-bottom: 10px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 200px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+<body>
+    <%- include('partials/header'); -%>
+
+    <div id = "main">
+        <div id = "login">
+            <h1>Seller Login</h1>
+            <p style="color: red;" id = "error"> </p>
+            <form id="form">
+                <input type="text" name="username" placeholder="Username" required><br>
+                <input type="password" name="password" placeholder="Password" required><br>
+                <button id="submit_btn">Login</button>
+                <a style="margin-top: 10px;" href="/forgotpassword">Forgot password?</a>
+            </form>
+        </div>
+    
+    </div>
+    
+    <script>
+        const form = document.getElementById("form");
+        const error = document.getElementById("error");
+
+        const button = document.getElementById("submit_btn");
+
+        button.addEventListener("click", async (event) => {
+            event.preventDefault();  // Prevent page from reloading on submit
+   
+
+            const email = form.username.value
+            const password = form.password.value;
+
+            try {
+                const res = await fetch("http://localhost:3000/seller/login",{
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify( {username: email, password: password} ),
+            })
+            const data = await res.json();
+            console.log(data);
+            if(data.error){
+                error.textContent = data.error;
+            }
+            if(data.user){
+                window.location.href = "/sellerhome";
+            }   
+    
+            } catch (error) {
+                console.log(error);
+            }
+        })
+    </script>
+</body>
+</html>

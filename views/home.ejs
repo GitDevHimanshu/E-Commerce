@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>anything.com!</title>    
+    <link rel="stylesheet" href="/userhomestyle.css">
+</head>
+<body>
+
+<%- include('partials/header'); -%>
+
+<h1>Get the best offers!</h1>
+
+<div id="parent-container">
+    <% product.forEach(element => { %>
+        <div id="<%= element.ID %>">
+            <img src="<%= element.PHOTO %>" alt="product image" />
+            <p><%= element.PRODNAME %></p>
+            <button style="background-color: #333333" onclick= "viewDetail('<%= element.ID %>')">View Detail</button>
+            <button  style="background-color: #005904;" onclick="tologin()">Add to Cart</button>
+        </div>
+    <% }) %>
+   
+</div>
+<div id = "paging" >
+    <!-- <p id = "error" ></p>
+    <button style="background-color: #333333;" onclick = "dec()"> << </button>
+    <label style="font-weight: bold; color: #005904;" id = pagenum>1</label> -->
+    <button style="background-color: #333333;" onclick="tologin()"> Login to view More </button>
+    <!-- <button onclick = "loadmoreprod()"> Load More </button> -->
+</div>
+</body>
+<script src="/homescript.js"></script>
+
+</html>

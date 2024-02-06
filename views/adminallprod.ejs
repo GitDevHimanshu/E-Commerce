@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+       .container{
+        width: 100%;
+        height: 100%;
+       } 
+
+       #content {
+        height: 90%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+       }
+
+       .productsframe {
+        width: 20%;
+        height: 10%;
+        background-color: gainsboro;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px;
+       }
+
+       img {
+        width: 150px;
+        height: 150px;
+       }
+
+       #img{
+        width: 150px;
+        height: 150px;
+       }
+
+       #actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        }
+
+        .productsframe label {
+        font-size: 12px;
+        display: inline-block;
+        width: 85px;
+        font-weight: bold;
+        }
+
+        .productsframe input {
+        width: 80px;
+        height: 15px;   
+        margin-top: 2px;
+        }
+
+        #detail {
+        margin-top: 6%;
+        margin-bottom: 10%;
+        }
+
+        #update_delete {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-evenly;
+        }
+
+        #delete {
+        height: 30px;
+        width: 40%;
+        background-color: #DC3545;
+        color: white;
+        }
+
+
+    </style>
+</head>
+<body>
+    <%- include('partials/header') -%>
+    <div  class="container">
+        <a href="/admin/adminhome">back to home</a>
+        <div id = "content" >
+            <% Product.forEach(element => { %>
+                <div class = "productsframe" id="<%= element.ID %>">
+                    <div id = "img">
+                        <img src="<%= element.PHOTO %>"/>
+                    </div>
+
+                    <div id = "actions">
+                        <div id = "detail">
+                           
+                            <span>
+                                <label> Product Name </label>
+                                <input type="text" value="<%= element.PRODNAME %>" readonly/><br>
+                            </span>
+                           
+                            <span>
+                                <label> Product Price </label>
+                                <input type="number" value="<%= element.PRICE %>" readonly/><br>
+                            </span>
+                           
+                            <span>
+                                <label> Product Qty </label>
+                                <input type="number" value="<%= element.QUANTITY %>" readonly>
+                                
+                            </span>
+                            
+                        </div>
+                        <div id = "update_delete">
+                            <button onclick="deleteprod('<%= element.ID %>')"  id = "delete">Delete</button>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                </div>
+            <% }) %>
+        </div>
+        <div id = "loadmore">
+
+        </div>
+    </div>
+    <script>
+       async function deleteprod(id) {
+            let content = document.getElementById("content");
+            // console.log(content.children.length);
+
+            const res = await fetch('http://localhost:3000/admin/deleteprod',{
+                method: 'DELETE',
+                headers:{ 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id , limit: content.children.length })
+            })
+
+            const data = await res.json();
+
+            if(data.product.length !== 0){
+                content.innerHTML = '';
+
+                data.product.forEach(element => {
+                    content.innerHTML += generatediv(element);
+                });
+            } else {
+                console.log("no more products");
+            }
+        }
+
+
+        function generatediv(ele){
+           const component = `
+                <div class="productsframe" id="${ele.ID}">
+                    <div id="img">
+                        <img src="${ele.PHOTO}" />
+                    </div>
+
+                    <div id="actions">
+                        <div id="detail">
+                            <span>
+                                <label> Product Name </label>
+                                <input type="text" value="${ele.PRODNAME}" readonly /><br>
+                            </span>
+            
+                            <span>
+                                <label> Product Price </label>
+                                <input type="number" value="${ele.PRICE}" readonly /><br>
+                            </span>
+            
+                            <span>
+                                <label> Product Qty </label>
+                                <input type="number" value="${ele.QUANTITY}" readonly>
+                            </span>
+                        </div>
+                        <div id="update_delete">
+                            <button onclick="deleteprod('${ele.ID}')" id="delete">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return component;
+        }
+
+
+    </script>
+</body>
+</html>
