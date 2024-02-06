@@ -53,6 +53,3 @@ module.exports.requireAdminAuth = (req, res, next) => {
         res.redirect('/admin/login');
     }
 }
-
-
-
