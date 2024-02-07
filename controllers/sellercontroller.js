@@ -1,5 +1,6 @@
 const connection = require('../model/mysqldb');
 const jwt = require('jsonwebtoken');
+let{ v4:uuid } = require('uuid');
 
 module.exports.sellerloginGet  = (req, res) => {
     try {
@@ -15,9 +16,27 @@ module.exports.sellerloginGet  = (req, res) => {
 
 module.exports.sellerloginPost = (req, res) => {
     try {
-        
+        // console.log(req.body.username);
+        connection.query("SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 1",[req.body.username],(error, result) => {
+            console.log(result);
+            if(!result){
+                return res.status(401).send.json({error: "Invalid Username"});
+            }
+            if(req.body.password === result[0].password){
+                if(result[0].verifiedemail === 1) {
+                    const token = jwt.sign({userid: result[0].username}, 'Seller-Gupt-Chabi-login', { expiresIn: Math.floor(Date.now() / 1000) + 3600 })
+                    res.cookie("seller", token, { httpOnly: true, expires: new Date(Date.now() + 3600000) });
+                    res.status(201).json({user: result[0].username});
+                } else {
+                    res.status(403).json({error: "Please Verify Your Email ID."});
+                }
+            } else {
+                res.status(401).json({error: "Wrong Password!"});
+            }
+        })
     } catch (error) {
-        
+        console.log(error.message);
+        res.json({ error: "internal server error" });
     }
 }
 
@@ -35,18 +54,19 @@ module.exports.sellerSignupPost = (req, res) => {
     try {
 
      console.log(req.body);
-     connection.query("SELECT * FROM SELLER WHERE USERNAME = ?", [req.body.username],  (error, result, fields) => {
+     connection.query("SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 1", [req.body.username],  (error, result, fields) => {
          if(result.length !== 0){
              throw Error("Username already taken");
          }
          else {
-             verificationEmail = req.body.email;             
-             connection.query("INSERT INTO SELLER ( name, username, password, profile, verifiedemail) VALUES ( ?, ?, ?, ?, ?);", [req.body.name, req.body.username, req.body.password, req.file?.filename || "d5879ded22a4b5e16270e53536124f9c", 0], (error, result, fields) => {
+             verificationEmail = req.body.email; 
+             let uid = uuid();            
+             connection.query("INSERT INTO SELLER ( id, name, username, password, profile, verifiedemail) VALUES ( ?, ?, ?, ?, ?, ?);", [uid, req.body.name, req.body.username, req.body.password, req.file?.filename || "d5879ded22a4b5e16270e53536124f9c", 0], (error, result, fields) => {
                  if (error) {
                      console.log(error);
                  } else {
-                    //  console.log(result.insertId);
-                     const param = jwt.sign({ userid: result.insertId }, "Seller-Gupt-Chabi", {expiresIn: '1h'})
+                    console.log(result);    
+                     const param = jwt.sign({ userid: result.insertId }, "Seller-Gupt-Chabi-verify", {expiresIn: '1h'})
                     
                      const link = `http://localhost:3000/login?id=${param}`
                      
@@ -63,4 +83,40 @@ module.exports.sellerSignupPost = (req, res) => {
       res.render("sellersignup.ejs", { cookie: null, name: "guest" })
       console.log(error);
     }
+}
+
+module.exports.sellerHome = (req,res) =>{
+    let seller = jwt.decode(req.cookies.seller);
+    let user_detail;
+    connection.query("SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 1",[seller.userid],(error, result) => {
+       user_detail = result;
+       connection.query("SELECT * FROM PRODUCT  Where product_verified = 1 and seller = ?", [user_detail[0].id],(error, result) => {
+            res.render('seller.ejs', {cookie: 1, admin: 0, name: user_detail[0].name , product: result, photo: user_detail[0].profile});
+       })
+    })
+
+
+
+
+    // connection.query('SELECT * FROM PRODUCT INNER JOIN USER ON PRODUCT.SELLER = USER.ID WHERE ROLE = 1 AND PRODUCT_VERIFIED = 1',(error, result) => {
+    //     if(error){
+    //         console.log(error);
+    //     } else {
+    //         // res.render('seller.ejs', {cookie: 1, admin: 1, name: .userid, product: result.product, photo: result.user.profile});
+
+    //     }
+    // })
+    // res.render('seller.ejs', {cookie: 1, admin: 1, name: user.userid, product: result.product, photo: result.user.profile});
+}
+
+
+module.exports.sellerProductDelete = (req, res) =>{
+    connection.query('DELETE FROM PRODUCT WHERE ID = ?' , req.body.id ,( error, result ) => {
+        if(error){
+            console.log(error);
+            res.json({delete: false})
+        } else {
+            res.json({delete: true})
+        } 
+    })
 }

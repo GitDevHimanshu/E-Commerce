@@ -63,7 +63,7 @@ async function moveleft(){
 
 function generatediv(element){
     const component =  `
-    <div class="prodframe" id="${element.ID}">
+    <div class="prodframe" id="${element.i}">
         <div id="img">
             <img src="${element.PHOTO}"/>
         </div>
@@ -84,8 +84,8 @@ function generatediv(element){
                 </span>
             </div>
             <div id="update_delete">
-                <button onclick="deleteprod(${element.ID})" id="reject">Reject</button>
-                <button onclick="approve(${ element.ID })" id = "approve">approve</button>
+                <button onclick="deleteprod(${element.id})" id="reject">Reject</button>
+                <button onclick="approve(${ element.id })" id = "approve">approve</button>
             </div>
         </div>
     </div>`;
@@ -101,7 +101,6 @@ async function approve(id){
     // const name = detail.children[0].children[1].value;
     // const price = detail.children[1].children[1].value;
     // const quantity = detail.children[2].children[1].value;
-
     const res = await fetch("http://localhost:3000/admin/approve",{
         method: "POST",
         headers: {'Content-Type': 'application/json'},

@@ -19,7 +19,6 @@ module.exports.addToCart = async (req, res) => {
     try {
             const user = jwt.decode(req.cookies.jwt);
             const result = await userQuery.addToCartQuery(user.userid, req.body.id);
-            console.log(result);
             if(result){
                 res.end();
             } else {

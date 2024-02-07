@@ -14,11 +14,11 @@
 
 <div id="parent-container">
     <% product.forEach(element => { %>
-        <div id="<%= element.ID %>">
+        <div id="<%= element.id %>">
             <img src="<%= element.PHOTO %>" alt="product image" />
             <p><%= element.PRODNAME %></p>
-            <button style="background-color: #333333" onclick= "viewDetail('<%= element.ID %>')">View Detail</button>
-            <button  style="background-color: #005904;" onclick = "addToCart('<%= element.ID %>')">Add to Cart</button>
+            <button style="background-color: #333333" onclick= "viewDetail('<%= element.id %>')">View Detail</button>
+            <button  style="background-color: #005904;" onclick = "addToCart('<%= element.id %>')">Add to Cart</button>
         </div>
     <% }) %>
    

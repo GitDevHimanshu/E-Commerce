@@ -1,4 +1,5 @@
 const connection = require("./mysqldb");
+const { v4: uuid } = require("uuid");
 
 module.exports.getProductDetailQuery = (prod_id) =>{
     return new Promise((resolve, reject) => {
@@ -16,19 +17,20 @@ module.exports.getProductDetailQuery = (prod_id) =>{
 
 module.exports.addToCartQuery = (userid, reqId) => {
     return new Promise((resolve, reject) => {
-        let sql1 = 'SELECT * FROM USER WHERE username = ?';
+        let sql1 = 'SELECT * FROM USER WHERE username = ? AND role = 0';
         let sql2 = 'SELECT * FROM PRODUCT WHERE ID = ?';
         let sql3 = 'SELECT * FROM CART WHERE PRODUCT_ID = ? && USER_ID = ?';
-        let sql4 = 'INSERT INTO CART (USER_ID, PRODUCT_ID, QUANTITY) VALUE (?,?,?)';
+        let sql4 = 'INSERT INTO CART (ID, USER_ID, PRODUCT_ID, QUANTITY) VALUE (?,?,?,?)';
         let user_detail;
         let product_detail;
+        let uid = uuid();
         connection.query(sql1,[userid],(error, result) => {
             user_detail = result;
             connection.query(sql2,[reqId],(error, result) => {
                 product_detail = result;
                 connection.query(sql3,[reqId, user_detail[0].id], (error, result) => {
                     if(result.length === 0){
-                        connection.query(sql4,[user_detail[0].id, reqId, 1], (error, result) => {
+                        connection.query(sql4,[uid, user_detail[0].id, reqId, 1], (error, result) => {
                             if(error){
                                 console.log(error);
                                 reject(false);

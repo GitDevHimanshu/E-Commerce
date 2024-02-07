@@ -1,9 +1,9 @@
 const connection = require('./mysqldb');
-const { v4:uuid } = require('uuid');
+// const { v4:uuid } = require('uuid'); 
 
 module.exports.loginPostQuery = (username) => {
     return new Promise((resolve, reject) => {
-        let sql = "SELECT * FROM USER WHERE USERNAME = ?";
+        let sql = "SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 0";
         connection.query(sql,[username],(error, result) => {
             if (error){
                 reject(error);
@@ -46,7 +46,7 @@ module.exports.loginGetQuery = (userid) => {
 
 module.exports.signupPostQuery = (uid,naam, username, password, filename, verified, address, phone, role) => {
     return new Promise((resolve, reject) => {
-        const sql1 = "SELECT * FROM USER WHERE USERNAME = ?";
+        const sql1 = "SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 0";
         const sql2 = "INSERT INTO user (id, name, username, password, profile, verifiedemail, address, phone, role) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?);";
         connection.query(sql1, [username], (error, result) => {
             if (result.length !== 0) {
@@ -66,7 +66,7 @@ module.exports.signupPostQuery = (uid,naam, username, password, filename, verifi
 
 module.exports.userhomeGetQuery = (userid) => {
     return new Promise(( resolve, reject ) => {
-        const sql1 = "SELECT * FROM USER WHERE USERNAME = ?";
+        const sql1 = "SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 0";
         const sql2 = "SELECT * FROM product WHERE product_verified = ? LIMIT 5";
         let loggedin_user;
         connection.query(sql1,[userid], (error, result) => {

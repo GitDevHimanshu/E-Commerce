@@ -84,7 +84,7 @@ module.exports.loginPost = async (req, res) => {
         
     } catch (error) {
         console.log(error.message);
-        res.json({ error: error.message });
+        res.json({ error: "internal server error" });
     }
 };
 

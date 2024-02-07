@@ -40,7 +40,7 @@
 
             <div id = "mid">
                 <% Product.forEach(element => { %>
-                    <div class = "prodframe" id = "<%= element.ID %>">
+                    <div class = "prodframe" id = '<%= element.id %>'>
                         <div id = "img">
                             <img src="<%= element.PHOTO %>"/>
                         </div>
@@ -65,9 +65,9 @@
                                 
                             </div>
                             <div id = "update_delete">
-                                <!-- <button onclick="update('<%= element.ID  %>')" id = "update">Update</button> -->
-                                <button onclick="deleteprod('<%= element.ID %>')"  id = "reject">Reject</button>
-                                <button onclick="approve('<%= element.ID %>')" id = "approve">approve</button>
+                                <!-- <button onclick="update('<%= element.id  %>')" id = "update">Update</button> -->
+                                <button onclick="deleteprod('<%= element.id %>')"  id = "reject">Reject</button>
+                                <button onclick="approve('<%= element.id %>')" id = "approve">approve</button>
                             </div>
                             
                         </div>

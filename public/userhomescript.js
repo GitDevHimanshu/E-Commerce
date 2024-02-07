@@ -42,14 +42,14 @@ limit.addEventListener("keypress", (e) => {
             parent.innerHTML = "";
             data.forEach(element => {
             const mdiv = document.createElement("div");
-            mdiv.id = element.ID;
+            mdiv.id = element.id;
             mdiv.innerHTML = `<img src = "${element.PHOTO}" alt = "product image"/>
                               <p> ${element.PRODNAME} </p>
                               <button style="background-color: #333333;">View Detail</button>
                               <button style="background-color: #005904;">Add to Cart</button>`;    
             
-                              mdiv.children[2].onclick = ()=> {viewDetail(element.ID)}; //  we have to make anonamoous function to that element
-                              mdiv.children[3].onclick = ()=> {addToCart(element.ID)};                                                                                       // because if we write function directly it will run that function
+                              mdiv.children[2].onclick = ()=> {viewDetail(element.id)}; //  we have to make anonamoous function to that element
+                              mdiv.children[3].onclick = ()=> {addToCart(element.id)};                                                                                       // because if we write function directly it will run that function
                               
                               parent.appendChild(mdiv);    
         });
@@ -81,14 +81,14 @@ limit.addEventListener("keypress", (e) => {
             parent.innerHTML = "";
             data.forEach(element => {
             const mdiv = document.createElement("div");
-            mdiv.id = element.ID;
+            mdiv.id = element.id;
             mdiv.innerHTML = `<img src = "${element.PHOTO}" alt = "product image"/>
                               <p> ${element.PRODNAME} </p>
                               <button style="background-color: #333333;">View Detail</button>
                               <button style="background-color: #005904;">Add to Cart</button>`;    
             
-                              mdiv.children[2].onclick = ()=> {viewDetail(element.ID)}; //  we have to make anonamoous function to that element
-                              mdiv.children[3].onclick = ()=> {addToCart(element.ID)};                                                                                       // because if we write function directly it will run that function
+                              mdiv.children[2].onclick = ()=> {viewDetail(element.id)}; //  we have to make anonamoous function to that element
+                              mdiv.children[3].onclick = ()=> {addToCart(element.id)};                                                                                       // because if we write function directly it will run that function
                               
                               parent.appendChild(mdiv);    
         });
@@ -124,15 +124,15 @@ limit.addEventListener("keypress", (e) => {
                 parent.innerHTML = "";
                 data.forEach(element => {
                 const mdiv = document.createElement("div");
-                mdiv.id = element.ID;
+                mdiv.id = element.id;
                 mdiv.innerHTML = `<img src = "${element.PHOTO}" alt = "product image"/>
                               <p> ${element.PRODNAME} </p>
                               <button style="background-color: #333333;">View Detail</button>
                               <button style="background-color: #005904;">Add to Cart</button>`;    
             
-                              mdiv.children[2].onclick = ()=> {viewDetail(element.ID)}; //  we have to make anonamoous function to that element
+                              mdiv.children[2].onclick = ()=> {viewDetail(element.id)}; //  we have to make anonamoous function to that element
                                                                                         // because if we write function directly it will run that function
-                              mdiv.children[3].onclick = ()=> {addToCart(element.ID)};
+                              mdiv.children[3].onclick = ()=> {addToCart(element.id)};
                               
 
                               parent.appendChild(mdiv);    
@@ -209,6 +209,7 @@ limit.addEventListener("keypress", (e) => {
 
 
     async function addToCart(productid){
+    //  console.log(productid);
       const res = await fetch("http://localhost:3000/user/addtocart",{
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

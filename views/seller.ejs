@@ -4,14 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>seller</title>
+    <style>
+
+.main {
+    margin: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th, table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f2f2f2;
+}
+
+/* Updated CSS for the image */
+#img {
+    max-width: 100px; /* Adjust the width as needed */
+    max-height: 100px; /* Adjust the height as needed */
+    margin-right: 10px; /* Move the image towards left by adding margin-right */
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#delete {
+    background-color: #dc3545;
+}
+
+#delete:hover {
+    background-color: #bd2130;
+}
+
+#update {
+    background-color: #ffc107;
+}
+
+#update:hover {
+    background-color: #e0a800;
+}
+    </style>
 </head>
 <body>
-    <%- include('/partials/header')  %>
-    <div id = "main">
-        <div id = >
+    <%- include('partials/header'); -%>
+    <div class="main" style="text-align: center;">
+        <h1>Welcome to the Seller Dashboard!</h1>
+        <table>
+            <tr>
+                <th> image </th>
+                <th> Name </th>
+                <th> Description </th>
+                <th> price </th>
+                <th> stock </th>
+                <th> action </th>
+            </tr>
+            <% product.forEach(element => { %>
+                <tr id = "<%= element.id %>">
+                    <td><img id = "img" src="<%= element.PHOTO %>"></td>
+                    <td><%=  element.PRODNAME %></td>
+                    <td><%= element.DESCRIPTION %></td>
+                    <td><%= element.PRICE %></td> 
+                    <td><%= element.QUANTITY %></td>
+                    <td>
+                        <button onclick="sellerdel('<%= element.id %>')" id = "delete">Delete</button>
+                        <button onclick="update('<%= element.id %>')" id = "update">Update</button>
+                    </td>
 
-        </div>
+                </tr>
+            <% }) %>
+        </table>
     </div>
-    
 </body>
+<script>
+   async function sellerdel (id){
+    let row = document.getElementById(id);
+    
+    let res = await fetch("http://localhost:3000/seller/seller_prod_delete",{
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( { id: id } )
+    })
+    const data = await res.json();
+    if(data.delete){
+        row.remove();
+    } else {
+        console.log("some error occured");
+    }
+   }
+
+   async function update (id){
+    // 
+   }
+</script>
 </html>
