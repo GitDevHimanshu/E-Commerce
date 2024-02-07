@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("../methods/nodemailer");
 const authQuery = require("../model/authQuery");
 require('dotenv').config()
+const { v4: uuid } = require('uuid');
 
 
 module.exports.getHome = async (req, res) => {
@@ -31,7 +32,8 @@ module.exports.loginGet = async (req,res) => {
                     res.render('login', { cookie: null, name: "guest" , error: " user not verified"});
                 }
                 else{
-                    const res = await authQuery.loginGetQuery(decodedtoken.user_id);
+                    console.log(decodedtoken);
+                    const result = await authQuery.loginGetQuery(decodedtoken.userid);
                     res.render('login', { cookie: null, name: "guest" , error: " "});
                 }
             }) 
@@ -48,8 +50,9 @@ module.exports.signupPost = async (req,res) => {
    try {
     let file = req.body.filename ?? "d5879ded22a4b5e16270e53536124f9c";
     let role = req.body.role ?? 0;
-    const result = await authQuery.signupPostQuery(req.body.name, req.body.username, req.body.password, file, 0 , req.body.address, req.body.phone, role);
-    const param = jwt.sign({ userid: result.insertId }, process.env.verifyJWT , {expiresIn: '1h'})
+    const uid = uuid();
+    const result = await authQuery.signupPostQuery(uid, req.body.name, req.body.username, req.body.password, file, 0 , req.body.address, req.body.phone, role);
+    const param = jwt.sign({ userid: uid }, process.env.verifyJWT , {expiresIn: '1h'})
     const link = `http://localhost:3000/login?id=${param}`
                     
     nodemailer.sendMail(req.body.username, link);

@@ -1,4 +1,5 @@
 const connection = require('./mysqldb');
+const { v4:uuid } = require('uuid');
 
 module.exports.loginPostQuery = (username) => {
     return new Promise((resolve, reject) => {
@@ -29,9 +30,10 @@ module.exports.getHomeQuery = () => {
 
 
 module.exports.loginGetQuery = (userid) => {
+    console.log(userid);
     return new Promise((resolve, reject) => {
         let sql = "UPDATE USER SET VERIFIEDEMAIL = 1 WHERE ID = ?";
-        connection.query(sql,[userid],(error, result) =>{
+        connection.query(sql,userid,(error, result) =>{
             if(error){
                 reject(error);
             } else {
@@ -42,15 +44,15 @@ module.exports.loginGetQuery = (userid) => {
 }
 
 
-module.exports.signupPostQuery = (naam, username, password, filename, verified, address, phone, role) => {
+module.exports.signupPostQuery = (uid,naam, username, password, filename, verified, address, phone, role) => {
     return new Promise((resolve, reject) => {
         const sql1 = "SELECT * FROM USER WHERE USERNAME = ?";
-        const sql2 = "INSERT INTO user (name, username, password, profile, verifiedemail, address, phone, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        const sql2 = "INSERT INTO user (id, name, username, password, profile, verifiedemail, address, phone, role) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?);";
         connection.query(sql1, [username], (error, result) => {
             if (result.length !== 0) {
                 reject("Username already taken");
             } else {
-                connection.query(sql2, [naam, username, password, filename, verified, address, phone, role], (error, result) => {
+                connection.query(sql2, [ uid ,naam, username, password, filename, verified, address, phone, role], (error, result) => {
                     if (error) {
                         reject(error);
                     } else {
