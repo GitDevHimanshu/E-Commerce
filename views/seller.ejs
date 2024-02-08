@@ -6,16 +6,19 @@
     <title>seller</title>
     <style>
 
+/* Global styles */
 .main {
     margin: 20px;
 }
 
+/* Table styles */
 table {
     border-collapse: collapse;
     width: 100%;
 }
 
-table th, table td {
+table th,
+table td {
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
@@ -24,13 +27,14 @@ table th {
     background-color: #f2f2f2;
 }
 
-/* Updated CSS for the image */
+/* Image styles */
 #img {
-    max-width: 100px; /* Adjust the width as needed */
-    max-height: 100px; /* Adjust the height as needed */
-    margin-right: 10px; /* Move the image towards left by adding margin-right */
+    max-width: 100px;
+    max-height: 100px;
+    margin-right: 10px;
 }
 
+/* Button styles */
 button {
     padding: 8px 12px;
     border: none;
@@ -44,6 +48,7 @@ button:hover {
     background-color: #0056b3;
 }
 
+/* Delete button styles */
 #delete {
     background-color: #dc3545;
 }
@@ -52,6 +57,7 @@ button:hover {
     background-color: #bd2130;
 }
 
+/* Update button styles */
 #update {
     background-color: #ffc107;
 }
@@ -59,11 +65,42 @@ button:hover {
 #update:hover {
     background-color: #e0a800;
 }
+
+/* Input styles */
+input {
+    text-align: center;
+}
+
+/* Lower header styles */
+.lowerheader {
+    background-color: #f8f9fa; /* Lighter background color */
+    border-bottom: 2px solid #007bff; /* Thicker blue border at the bottom */
+    display: flex; /* Use flexbox for better alignment */
+    justify-content: center; /* Center align items horizontally */
+    height: 30px; /* Decreased height */
+}
+
+.lowerheader a {
+    text-decoration: none; /* Remove underline from links */
+    color: #007bff; /* Blue link text color */
+    margin: 0 15px; /* Equal margin around links */
+    font-weight: bold; /* Bold text */
+    transition: color 0.3s; /* Smooth transition for color change */
+    line-height: 20px; /* Adjusted line height */
+}
+
+.lowerheader a:hover {
+    color: #0056b3; /* Darker blue link text color on hover */
+}
     </style>
 </head>
 <body>
     <%- include('partials/header'); -%>
-    <div class="main" style="text-align: center;">
+    <div class="main" id = 'top' style="text-align: center;">
+        <div  class='lowerheader'>
+            <a href = "/seller/orders">orders</a>
+            <a href = "/seller/seller_addprod">Add Products</a>
+        </div>
         <h1>Welcome to the Seller Dashboard!</h1>
         <table>
             <tr>
@@ -72,15 +109,21 @@ button:hover {
                 <th> Description </th>
                 <th> price </th>
                 <th> stock </th>
+                <th> status </th>
                 <th> action </th>
             </tr>
             <% product.forEach(element => { %>
                 <tr id = "<%= element.id %>">
                     <td><img id = "img" src="<%= element.PHOTO %>"></td>
-                    <td><%=  element.PRODNAME %></td>
-                    <td><%= element.DESCRIPTION %></td>
-                    <td><%= element.PRICE %></td> 
-                    <td><%= element.QUANTITY %></td>
+                    <td><input  type="text" value =" <%=  element.PRODNAME %>"/></td>
+                    <td><input  type="text" value =" <%= element.DESCRIPTION %>"/></td>
+                    <td><input  type="text" value =" <%=  element.PRICE %>"/></td> 
+                    <td><input  type="text" value =" <%= element.QUANTITY %>"/></td>
+                    <td> <% if (element.product_verified == 1) { %>
+                            verified
+                    <% } else { %>
+                        pending
+                    <% } %> </td>
                     <td>
                         <button onclick="sellerdel('<%= element.id %>')" id = "delete">Delete</button>
                         <button onclick="update('<%= element.id %>')" id = "update">Update</button>
@@ -109,7 +152,29 @@ button:hover {
    }
 
    async function update (id){
-    // 
+     let row = document.getElementById(id);
+
+     let name = row.children[1].children[0].value;
+     let description = row.children[2].children[0].value;
+     let price = row.children[3].children[0].value;
+     let stock = row.children[4].children[0].value;
+     let action = row.children[6];
+
+    // console.log(name, description, price, stock);
+    let res = await fetch("http://localhost:3000/seller/seller_prod_update", {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ id: id, name: name, description: description, price: price, quantity: stock })
+    })
+    let data = await res.json();
+    if(data.update){
+        const p = document.createElement('p');
+        p.innerText = "updated!";
+        action.appendChild(p);
+        setTimeout(()=>{
+            p.remove();
+        },1500)
+    }
    }
 </script>
 </html>

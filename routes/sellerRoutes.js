@@ -22,4 +22,10 @@ router.route('/signup')
 router.route('/seller_prod_delete')
     .delete(sellercontroller.sellerProductDelete)
 
+router.route('/seller_prod_update')
+    .patch(sellercontroller.sellerProductUpdate)
+
+router.route('/seller_addprod')
+    .get(sellercontroller.sellerProductAdd)
+
 module.exports = router;

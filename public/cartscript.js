@@ -1,5 +1,8 @@
 const parent = document.getElementById("parent_div");
-
+const payment = document.getElementById("payment");
+if(parent.children.length > 0){
+    payment.style.pointerEvents = "auto";
+}
 
     // to delete the item from the cart
     async function remove(id) {

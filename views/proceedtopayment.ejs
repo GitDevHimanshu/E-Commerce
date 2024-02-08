@@ -217,11 +217,18 @@
         const cardnum = document.getElementById("card-number").value;
         const cardexp = document.getElementById("expiration-date").value;
         const cardcvv = document.getElementById("cvv").value;
-        console.log(cardnum, cardexp, cardcvv);
+        // console.log(cardnum, cardexp, cardcvv);
+        
         if (paymentmethod.value === "cash" || (cardnum.trim() !== "" && cardexp.trim() !== "" && cardcvv.trim() !== "")) {
-            const res = await fetch("http://localhost:3000/cart/placeorder", {
-            method: 'POST',
-        });
+        const res = await fetch("http://localhost:3000/cart/placeorder", {
+            method: 'POST',  
+        })
+        if(res.ok){
+            location.href="/userhome";
+        } else {
+            console.log('fuck you')
+        }
+
         }
 
     }

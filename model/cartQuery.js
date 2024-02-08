@@ -1,4 +1,5 @@
 const connection = require('./mysqldb');
+const {v4:uuid} = require("uuid")
 
 module.exports.removefromCartQuery = (cartId) => {
      return new Promise((resolve, reject) => {
@@ -79,6 +80,47 @@ module.exports.changeAddressQuerry = (address, userId) => {
             } else {
                 resolve(true);
             }
+        })
+    })
+}
+
+
+module.exports.placeOrderQuery = (userid) => {
+    return new Promise((resolve, reject) => {
+        let user;
+        let sql1 = 'SELECT * FROM USER WHERE USERNAME = ? AND ROLE = ?';
+        let sql2 = 'SELECT P.SELLER, P.PRICE, C.ID AS CART_ID , C.USER_ID, C.PRODUCT_ID, C.QUANTITY FROM PRODUCT P INNER JOIN CART C ON P.ID = C.PRODUCT_ID'
+        connection.query(sql1,[userid,0],(error, result) => {
+            user = result;
+            connection.query(sql2, (error, result) => {
+                if(error){
+                    reject(error);
+                } else {
+                    resolve({detail: result,user: user});
+                }
+            })
+        })
+    })
+}
+
+module.exports.insertIntoOrderQuery = (result) =>{
+    return new Promise((resolve, reject)=>{
+        let qry = "insert into ORDERS values ";
+        result.detail.forEach(row =>{
+            qry += `("${uuid()}","${row.SELLER}","${row.PRODUCT_ID}","${row.QUANTITY}","${row.QUANTITY*row.PRICE}",SYSDATE(),"0","${row.USER_ID}","${result.user[0].address}"), `
+        } )
+        qry = qry.substring(0, qry.length-2)
+        connection.query(qry,(err,res)=>{
+            err?reject(err):resolve(res);
+        })   
+    })
+}
+
+module.exports.deleteCartAfterPlaceOrder = (userid) => {
+    return new Promise((resolve, reject) => {
+        let sql = 'DELETE FROM CART WHERE USER_ID = ?';
+        connection.query(sql, [userid], (error, result) => {
+            error?reject(false):resolve(true);
         })
     })
 }

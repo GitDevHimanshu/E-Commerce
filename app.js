@@ -12,12 +12,12 @@ const app = express();
 const PORT = process.env.PORT;
 
 
-// app.use((req,res,next)=>{
-//     console.log(req.method,'---',req.url);
-//     // console.log(req.body);
+app.use((req,res,next)=>{
+    console.log(req.method,'---',req.url);
+    // console.log(req.body);
     
-//     next();
-// })
+    next();
+})
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())

@@ -23,5 +23,8 @@ router.route('/cartget')
 router.route('/pageinc')
     .get(authcontroller.requireAuth,usercontroller.nextPage);
 
+router.route('/myorder')
+    // .get(authcontroller.requireAuth,usercontroller.orderpageGet);
+
 
 module.exports = router; 

@@ -18,7 +18,7 @@ module.exports.sellerloginPost = (req, res) => {
     try {
         // console.log(req.body.username);
         connection.query("SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 1",[req.body.username],(error, result) => {
-            console.log(result);
+            // console.log(result);
             if(!result){
                 return res.status(401).send.json({error: "Invalid Username"});
             }
@@ -90,7 +90,7 @@ module.exports.sellerHome = (req,res) =>{
     let user_detail;
     connection.query("SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 1",[seller.userid],(error, result) => {
        user_detail = result;
-       connection.query("SELECT * FROM PRODUCT  Where product_verified = 1 and seller = ?", [user_detail[0].id],(error, result) => {
+       connection.query("SELECT * FROM PRODUCT  Where seller = ?", [user_detail[0].id],(error, result) => {
             res.render('seller.ejs', {cookie: 1, admin: 0, name: user_detail[0].name , product: result, photo: user_detail[0].profile});
        })
     })
@@ -118,5 +118,29 @@ module.exports.sellerProductDelete = (req, res) =>{
         } else {
             res.json({delete: true})
         } 
+    })
+}
+
+module.exports.sellerProductUpdate = (req, res) => {
+    // console.log(req.body);
+    let sql = 'UPDATE PRODUCT SET PRODNAME = ?, DESCRIPTION = ?, PRICE = ?, QUANTITY = ? WHERE ID = ?;'
+    connection.query(sql,[req.body.name, req.body.description, req.body.price, req.body.quantity, req.body.id],(error, result) => {
+        if(error){
+            console.log(error);
+            res.json({update : false});
+        } else {
+            res.json({update : true}); 
+        }
+    })
+}
+
+module.exports.sellerProductAdd = ( req, res ) => {
+    let seller = jwt.decode(req.cookies.seller);
+    let user_detail;
+    connection.query("SELECT * FROM USER WHERE USERNAME = ? AND ROLE = 1",[seller.userid],(error, result) => {
+       user_detail = result;
+       connection.query("SELECT * FROM CART Where seller = ?", [user_detail[0].id],(error, result) => {
+            res.render('seller.ejs', {cookie: 1, admin: 0, name: user_detail[0].name , product: result, photo: user_detail[0].profile});
+       })
     })
 }
